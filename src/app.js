@@ -7,7 +7,31 @@ const app = express();
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-	const user = new User(req.body);
+	const data = req.body;
+
+	const ALLOWED_UPDATE_FIELDS = [
+		"firstName",
+		"lastName",
+		"password",
+		"about",
+		"gender",
+		"age",
+		"skills",
+	];
+
+	const isValidUpdate = Object.keys(data).every((k) =>
+		ALLOWED_UPDATE_FIELDS.includes(k)
+	);
+
+	if (!isValidUpdate) {
+		return res.status(400).send({ error: "Invalid update" });
+	}
+
+	if (data.skills?.length > 10) {
+		throw new Error("Cannot add more than 10 skills");
+	}
+
+	const user = new User(data);
 
 	try {
 		await user.save();
@@ -53,9 +77,34 @@ app.delete("/user", async (req, res) => {
 });
 
 // update user
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
+	const userId = req.params?.userId;
+	const data = req.body;
+
+	const ALLOWED_UPDATE_FIELDS = [
+		"firstName",
+		"lastName",
+		"password",
+		"about",
+		"gender",
+		"age",
+		"skills",
+	];
+
+	const isValidUpdate = Object.keys(data).every((k) =>
+		ALLOWED_UPDATE_FIELDS.includes(k)
+	);
+
+	if (!isValidUpdate) {
+		return res.status(400).send({ error: "Invalid update" });
+	}
+
+	if (data.skills?.length > 10) {
+		throw new Error("Cannot add more than 10 skills");
+	}
+
 	try {
-		await User.findByIdAndUpdate(req.body.userId, req.body, {
+		await User.findByIdAndUpdate(userId, data, {
 			returnDocument: "after",
 			runValidators: true,
 		});
