@@ -19,7 +19,7 @@ app.post("/signup", async (req, res) => {
 		const user = new User({
 			firstName: req.body.firstName,
 			lastName: req.body.lastName,
-			emailId: req.body.emailId,
+			email: req.body.email,
 			password: hashedPassword,
 		});
 
@@ -34,7 +34,7 @@ app.post("/signup", async (req, res) => {
 // login
 app.post("/login", async (req, res) => {
 	try {
-		const user = await User.findOne({ emailId: req.body.emailId });
+		const user = await User.findOne({ email: req.body.email });
 
 		if (!user) {
 			res.status(404).send("Invalid credentials");
@@ -58,7 +58,7 @@ app.post("/login", async (req, res) => {
 // get user by email
 app.get("/user", async (req, res) => {
 	try {
-		const user = await User.findOne({ emailId: req.body.emailId });
+		const user = await User.findOne({ email: req.body.email });
 
 		if (!user) {
 			res.status(404).send("User not found");
