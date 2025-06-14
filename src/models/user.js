@@ -1,5 +1,4 @@
 const mangoose = require("mongoose");
-const validator = require("validator");
 
 const { Schema } = mangoose;
 
@@ -20,20 +19,10 @@ const userSchema = new Schema(
 			trim: true,
 			required: true,
 			unique: true,
-			validate(value) {
-				if (!validator.isEmail(value)) {
-					throw new Error("Invalid email");
-				}
-			},
 		},
 		password: {
 			type: String,
 			required: true,
-			validate(value) {
-				if (!validator.isStrongPassword(value)) {
-					throw new Error("Invalid password");
-				}
-			},
 		},
 		age: {
 			type: Number,
