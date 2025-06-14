@@ -24,6 +24,11 @@ const userSchema = new Schema(
 			trim: true,
 			required: true,
 			unique: true,
+			validate(value) {
+				if (!validator.isEmail(value)) {
+					throw new Error("Invalid email");
+				}
+			},
 		},
 		password: {
 			type: String,
@@ -35,7 +40,7 @@ const userSchema = new Schema(
 				if (!validator.isURL(value)) {
 					throw new Error("Invalid URL");
 				}
-			}
+			},
 		},
 		age: {
 			type: Number,
