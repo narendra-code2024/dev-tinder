@@ -49,14 +49,9 @@ const userSchema = new Schema(
 		},
 		gender: {
 			type: String,
-			validate(value) {
-				if (
-					value !== "male" &&
-					value !== "female" &&
-					value !== "other"
-				) {
-					throw new Error("Invalid gender");
-				}
+			enum: {
+				values: ["male", "female", "other"],
+				message: "{VALUE} is not a valid gender",
 			},
 		},
 		about: {
