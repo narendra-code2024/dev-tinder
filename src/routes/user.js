@@ -28,6 +28,38 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
 	}
 });
 
+userRouter.get("/user/connections", userAuth, async (req, res) => {
+	try {
+		const loggedInUser = req.user;
+
+		const connections = await ConnectionRequest.find({
+			$or: [
+				{ fromUserId: loggedInUser._id },
+				{ toUserId: loggedInUser._id },
+			],
+			status: "accepted",
+		})
+			.populate("fromUserId", SAFE_DATA)
+			.populate("toUserId", SAFE_DATA);
+
+		const data = connections.map((conn) => {
+			if (conn.fromUserId._id.equals(loggedInUser._id)) {
+				return conn.toUserId;
+			}
+			return conn.fromUserId;
+		});
+
+		return res.status(200).json({
+			message: "Data fetched successfully",
+			data,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			message: err.message,
+		});
+	}
+});
+
 userRouter.get("/feed", userAuth, async (req, res) => {
 	try {
 		const page = parseInt(req.query.page) || 1;
