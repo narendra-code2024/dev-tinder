@@ -7,11 +7,13 @@ const profileRouter = express.Router();
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
 	try {
-		res.json({
+		return res.json({
 			data: req.user,
 		});
 	} catch (err) {
-		res.status(500).send(err.message);
+		return res.status(500).json({
+			message: err.message,
+		});
 	}
 });
 
@@ -27,12 +29,14 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
 		await loggedInUser.save();
 
-		res.json({
+		return res.json({
 			message: `${loggedInUser.firstName}, your profile updated successfully`,
 			data: loggedInUser,
 		});
 	} catch (err) {
-		res.status(500).send(err.message);
+		return res.status(500).json({
+			message: err.message,
+		});
 	}
 });
 
@@ -54,12 +58,14 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
 
 		await loggedInUser.save();
 
-		res.json({
+		return res.json({
 			message: `${loggedInUser.firstName}, your password updated successfully`,
 			data: loggedInUser,
 		});
 	} catch (err) {
-		res.status(500).send(err.message);
+		return res.status(500).json({
+			message: err.message,
+		});
 	}
 });
 

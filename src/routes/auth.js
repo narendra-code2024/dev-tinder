@@ -20,9 +20,13 @@ authRouter.post("/signup", async (req, res) => {
 
 		await user.save();
 
-		res.status(201).send("User created successfully");
+		return res.status(201).json({
+			message: "Your profile is created successfully",
+		});
 	} catch (err) {
-		res.status(400).send(err.message);
+		return res.status(400).json({
+			message: err.message,
+		});
 	}
 });
 
@@ -31,13 +35,17 @@ authRouter.post("/login", async (req, res) => {
 		const user = await User.findOne({ email: req.body.email });
 
 		if (!user) {
-			res.status(404).send("Invalid credentials");
+			res.status(404).json({
+				message: "Invalid credentials",
+			});
 		}
 
 		const isPasswordValid = await user.comparePassword(req.body.password);
 
 		if (!isPasswordValid) {
-			res.status(404).send("Invalid credentials");
+			res.status(404).json({
+				message: "Invalid credentials",
+			});
 		}
 
 		const token = await user.getJWT();
@@ -46,19 +54,29 @@ authRouter.post("/login", async (req, res) => {
 			expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
 		});
 
-		res.status(200).send("Login successful");
+		return res.status(200).json({
+			message: "Login successful",
+		});
 	} catch (err) {
-		res.status(500).send(err.message);
+		return res.status(500).json({
+			message: err.message,
+		});
 	}
 });
 
 authRouter.post("/logout", async (req, res) => {
 	try {
-		res.cookie("token", null, {
-			expires: new Date(Date.now()),
-		}).send("Logout successful");
+		return res
+			.cookie("token", null, {
+				expires: new Date(Date.now()),
+			})
+			.json({
+				message: "Logout successful",
+			});
 	} catch (err) {
-		res.status(500).send(err.message);
+		return res.status(500).json({
+			message: err.message,
+		});
 	}
 });
 

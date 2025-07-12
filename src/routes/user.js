@@ -95,7 +95,9 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
 			data: users,
 		});
 	} catch (err) {
-		res.status(500).send(err.message);
+		res.status(500).json({
+			message: err.message,
+		});
 	}
 });
 
